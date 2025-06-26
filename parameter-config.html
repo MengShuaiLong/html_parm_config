@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>参数配置工具</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#10B981',
+                        danger: '#EF4444',
+                        warning: '#F59E0B',
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+    <header class="bg-primary text-white py-4 px-6 shadow-md">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold flex items-center">
+                <i class="fa fa-sliders mr-2"></i>
+                参数配置工具
+            </h1>
+            <div id="connection-status" class="flex items-center">
+                <span id="status-text" class="mr-2">未连接</span>
+                <span id="status-indicator" class="w-3 h-3 rounded-full bg-danger"></span>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 py-8">
+        <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-6">
+            <!-- 连接设置 -->
+            <div class="mb-6">
+                <label for="server-url" class="block text-sm font-medium text-gray-700 mb-1">服务器地址</label>
+                <div class="flex">
+                    <input 
+                        id="server-url" 
+                        type="text" 
+                        value="ws://172.28.0.208:9002" 
+                        class="flex-grow px-2 py-1 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    >
+                    <button 
+                        id="connect-button" 
+                        class="bg-secondary hover:bg-secondary/90 text-white px-4 py-2 rounded-r-lg transition-all duration-200"
+                    >
+                        <i class="fa fa-plug mr-1"></i> 连接
+                    </button>
+                </div>
+            </div>
+
+            <!-- 参数配置表单-通信模块 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <!-- 新增标题 -->
+                <div class="col-span-full">
+                    <h2 class="text-xl font-bold text-blue-800 bg-blue-100 p-2 rounded">通信模块:</h2>
+                </div>
+                <!-- 参数1: IP地址 -->
+                <div class="space-y-1">
+                    <label for="param-ip" class="block text-sm font-medium text-gray-700">IP地址</label>
+                    <input 
+                        id="param-ip" 
+                        type="text" 
+                        placeholder="192.168.1.1" 
+                        class="w-full px-2 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    >
+                </div>
+                <!-- 参数2: 端口号 -->
+                <div class="space-y-1">
+                    <label for="param-port" class="block text-sm font-medium text-gray-700">端口号</label>
+                    <input 
+                        id="param-port" 
+                        type="number" 
+                        placeholder="8080" 
+                        min="1" 
+                        max="65535" 
+                        class="w-full px-2 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    >
+                </div>
+            </div>
+            <!-- 参数配置表单-感知模块 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <!-- 新增感知模块标题 -->
+                <div class="col-span-full mt-4">
+                    <h2 class="text-xl font-bold text-blue-800 bg-blue-100 p-2 rounded">感知模块:</h2>
+                </div>
+                <!-- 新增感知模块参数1: IP地址 -->
+                <div class="space-y-1">
+                    <label for="param-pre_lidar_ip" class="block text-sm font-medium text-gray-700">前雷达IP地址</label>
+                    <input 
+                        id="param-pre_lidar_ip" 
+                        type="text" 
+                        placeholder="192.168.1.1" 
+                        class="w-full px-2 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    >
+                </div>
+                <!-- 新增感知模块参数2: 端口号 -->
+                <div class="space-y-1">
+                    <label for="param-pre_lidar_port" class="block text-sm font-medium text-gray-700">前雷达端口号</label>
+                    <input 
+                        id="param-pre_lidar_port" 
+                        type="number" 
+                        placeholder="8080" 
+                        min="1" 
+                        max="65535" 
+                        class="w-full px-2 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    >
+                </div>
+            </div>
+            <!-- 参数配置表单-规控模块 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <!-- 新增规控模块标题 -->
+                <div class="col-span-full mt-4">
+                    <h2 class="text-xl font-bold text-blue-800 bg-blue-100 p-2 rounded">规控模块:</h2>
+                </div>
+                <!-- 新增规控模块参数1: 速度 -->
+                <div class="space-y-1">
+                    <label for="param-speed" class="block text-sm font-medium text-gray-700">速度</label>
+                    <input 
+                        id="param-speed" 
+                        type="number" 
+                        placeholder="100" 
+                        max="100" 
+                        class="w-full px-2 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    >
+                </div>
+                <!-- 新增规控模块参数2: 角度 -->
+                <div class="space-y-1">
+                    <label for="param-angle" class="block text-sm font-medium text-gray-700">角度</label>
+                    <input 
+                        id="param-angle" 
+                        type="number" 
+                        placeholder="45" 
+                        min="0" 
+                        max="180" 
+                        class="w-full px-2 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    >
+                </div>
+            </div>
+            <!-- 操作按钮 -->
+            <div class="flex justify-end space-x-4">
+                <button 
+                    id="reset-button" 
+                    class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition-all duration-200"
+                >
+                    <i class="fa fa-refresh mr-1"></i> 重置
+                </button>
+                <button 
+                    id="read-button" 
+                    class="px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg transition-all duration-200 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled
+                >
+                    <i class="fa fa-download mr-1"></i> 读取参数
+                </button>
+                <button 
+                    id="write-button" 
+                    class="px-4 py-2 bg-secondary hover:bg-secondary/90 text-white rounded-lg transition-all duration-200 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled
+                >
+                    <i class="fa fa-upload mr-1"></i> 写入参数
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-gray-800 text-white py-4 text-center text-sm">
+        <p>参数配置工具 &copy; RockAi-2025</p>
+    </footer>
+
+    <!-- 弹窗组件 -->
+    <div id="toast" class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4 transform transition-transform duration-300 scale-95">
+            <div id="toast-icon" class="w-12 h-12 flex items-center justify-center rounded-full mb-4 mx-auto">
+                <i class="fa fa-check text-xl"></i>
+            </div>
+            <h3 id="toast-title" class="text-xl font-bold text-center mb-2">操作成功</h3>
+            <p id="toast-message" class="text-gray-600 text-center">数据已成功更新</p>
+            <button id="toast-close" class="mt-4 w-full bg-primary hover:bg-primary/90 text-white py-2 rounded-lg transition-all duration-200">
+                确定
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // WebSocket 实例
+        let socket = null;
+        let serverUrl = 'ws://172.28.0.208:9002';
+        
+        // DOM 元素
+        const connectButton = document.getElementById('connect-button');
+        const serverUrlInput = document.getElementById('server-url');
+        const statusText = document.getElementById('status-text');
+        const statusIndicator = document.getElementById('status-indicator');
+        const readButton = document.getElementById('read-button');
+        const writeButton = document.getElementById('write-button');
+        const resetButton = document.getElementById('reset-button');
+        
+        // 弹窗元素
+        const toast = document.getElementById('toast');
+        const toastIcon = document.getElementById('toast-icon');
+        const toastTitle = document.getElementById('toast-title');
+        const toastMessage = document.getElementById('toast-message');
+        const toastClose = document.getElementById('toast-close');
+        
+        // 连接到 WebSocket 服务器
+        function connect() {
+            serverUrl = serverUrlInput.value.trim();
+            
+            try {
+                socket = new WebSocket(serverUrl);
+                
+                socket.onopen = () => {
+                    updateStatus('已连接', 'bg-secondary');
+                    connectButton.innerHTML = '<i class="fa fa-power-off mr-1"></i> 断开';
+                    connectButton.classList.remove('bg-secondary');
+                    connectButton.classList.add('bg-danger');
+                    connectButton.onclick = disconnect;
+                    readButton.disabled = false;
+                    writeButton.disabled = false;
+                    showToast('连接成功', '已成功连接到服务器', 'success');
+                };
+                
+                socket.onmessage = (event) => {
+                    try {
+                        const message = JSON.parse(event.data);
+                        processMessage(message);
+                    } catch (e) {
+                        showToast('错误', '解析消息失败', 'error');
+                    }
+                };
+                
+                socket.onclose = () => {
+                    updateStatus('未连接', 'bg-danger');
+                    connectButton.innerHTML = '<i class="fa fa-plug mr-1"></i> 连接';
+                    connectButton.classList.remove('bg-danger');
+                    connectButton.classList.add('bg-secondary');
+                    connectButton.onclick = connect;
+                    readButton.disabled = true;
+                    writeButton.disabled = true;
+                    showToast('连接断开', '与服务器的连接已断开', 'warning');
+                };
+                
+                socket.onerror = () => {
+                    showToast('错误', 'WebSocket 连接错误', 'error');
+                };
+            } catch (e) {
+                showToast('错误', `创建连接失败: ${e.message}`, 'error');
+            }
+        }
+        
+        // 断开 WebSocket 连接
+        function disconnect() {
+            if (socket) {
+                socket.close();
+            }
+        }
+        
+        // 处理接收到的消息
+        function processMessage(message) {
+            if (message.type === 'data') {
+                fillFormValues(message.data);
+                showToast('成功', '参数读取成功', 'success');
+            } else if (message.type === 'response') {
+                if (message.success) {
+                    showToast('成功', '参数写入成功', 'success');
+                } else {
+                    showToast('失败', message.error || '写入操作失败', 'error');
+                }
+            } else {
+                showToast('警告', `未知消息类型: ${message.type}`, 'warning');
+            }
+        }
+        
+        // 填充表单值
+        function fillFormValues(data) {
+            document.getElementById('param-ip').value = data['ip'] || '';
+            document.getElementById('param-port').value = data['port'] || '';
+            document.getElementById('param-pre_lidar_ip').value = data['pre_lidar_ip'] || '';
+            document.getElementById('param-pre_lidar_port').value = data['pre_lidar_port'] || '';
+            document.getElementById('param-speed').value = data['speed'] || '';
+            document.getElementById('param-angle').value = data['angle'] || '';
+            //打印data
+            console.log(data);
+        }
+        
+        // 获取表单值
+        function getFormValues() {
+            return {
+                ip: document.getElementById('param-ip').value,
+                port: parseInt(document.getElementById('param-port').value, 10) || 0,
+                pre_lidar_ip: document.getElementById('param-pre_lidar_ip').value,
+                pre_lidar_port: parseInt(document.getElementById('param-pre_lidar_port').value, 10) || 0,
+                speed: parseInt(document.getElementById('param-speed').value, 10) || 0,
+                angle: parseInt(document.getElementById('param-angle').value, 10) || 0,
+
+            };
+        }
+        
+        // 发送消息
+        function sendMessage(message) {
+            if (socket && socket.readyState === WebSocket.OPEN) {
+                try {
+                    const jsonMessage = JSON.stringify(message);
+                    socket.send(jsonMessage);
+                } catch (e) {
+                    showToast('错误', `发送消息失败: ${e.message}`, 'error');
+                }
+            } else {
+                showToast('错误', '未连接到服务器', 'error');
+            }
+        }
+        
+        // 更新连接状态
+        function updateStatus(text, colorClass) {
+            statusText.textContent = text;
+            statusIndicator.className = `w-3 h-3 rounded-full ${colorClass}`;
+        }
+        
+        // 显示弹窗
+        function showToast(title, message, type = 'success') {
+            // 设置弹窗内容和样式
+            toastTitle.textContent = title;
+            toastMessage.textContent = message;
+            
+            // 根据类型设置图标和颜色
+            if (type === 'success') {
+                toastIcon.className = 'w-12 h-12 flex items-center justify-center rounded-full bg-green-100 text-green-500 mb-4 mx-auto';
+                toastIcon.innerHTML = '<i class="fa fa-check text-xl"></i>';
+            } else if (type === 'error') {
+                toastIcon.className = 'w-12 h-12 flex items-center justify-center rounded-full bg-red-100 text-red-500 mb-4 mx-auto';
+                toastIcon.innerHTML = '<i class="fa fa-times text-xl"></i>';
+            } else if (type === 'warning') {
+                toastIcon.className = 'w-12 h-12 flex items-center justify-center rounded-full bg-yellow-100 text-yellow-500 mb-4 mx-auto';
+                toastIcon.innerHTML = '<i class="fa fa-exclamation-triangle text-xl"></i>';
+            }
+            
+            // 显示弹窗
+            toast.classList.remove('opacity-0', 'pointer-events-none');
+            toast.querySelector('div').classList.remove('scale-95');
+            toast.querySelector('div').classList.add('scale-100');
+            
+            // 3秒后自动关闭
+            setTimeout(hideToast, 3000);
+        }
+        
+        // 隐藏弹窗
+        function hideToast() {
+            toast.classList.add('opacity-0', 'pointer-events-none');
+            toast.querySelector('div').classList.remove('scale-100');
+            toast.querySelector('div').classList.add('scale-95');
+        }
+        
+        // 从服务器读取参数
+        function readParameters() {
+            sendMessage({ command: 'read' });
+        }
+        
+        // 向服务器写入参数
+        function writeParameters() {
+            const params = getFormValues();
+            
+            // 简单验证
+            if (!params.ip) {
+                showToast('错误', 'IP地址不能为空', 'error');
+                return;
+            }
+            
+            if (params.port <= 0 || params.port > 65535) {
+                showToast('错误', '端口号必须在1-65535之间', 'error');
+                return;
+            }
+            
+            sendMessage({
+                command: 'write',
+                data: params
+            });
+        }
+        
+        // 重置表单
+        function resetForm() {
+            document.getElementById('param-ip').value = '';
+            document.getElementById('param-port').value = '';
+            document.getElementById('param-pre_lidar_ip').value = '';
+            document.getElementById('param-pre_lidar_port').value = '';
+            document.getElementById('param-speed').value = '';
+            document.getElementById('param-angle').value = '';
+        }
+        
+        // 事件监听
+        connectButton.addEventListener('click', connect);
+        readButton.addEventListener('click', readParameters);
+        writeButton.addEventListener('click', writeParameters);
+        resetButton.addEventListener('click', resetForm);
+        toastClose.addEventListener('click', hideToast);
+    </script>
+</body>
+</html>    
