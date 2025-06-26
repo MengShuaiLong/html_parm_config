@@ -1,1 +1,2 @@
 # html_parm_config
+通过html界面通过websocket与服务通信，可以实现参数的配置，方便快捷
